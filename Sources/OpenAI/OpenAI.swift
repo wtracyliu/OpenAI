@@ -18,10 +18,15 @@ final public class OpenAI {
     }
 
     private let apiToken: String
-    private let session = URLSession.shared
+    private let session: URLSession
 
-    public init(apiToken: String) {
+    public init(apiToken: String, configuration: URLSessionConfiguration? = nil) {
         self.apiToken = apiToken
+        if let config = configuration {
+            self.session = URLSession(configuration: config)
+        } else {
+            self.session = URLSession.shared
+        }
     }
 }
 
