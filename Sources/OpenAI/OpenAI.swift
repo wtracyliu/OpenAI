@@ -252,21 +252,21 @@ public extension OpenAI {
             do {
                 let data = try Data(contentsOf: fileURL)
                 builder.addDataField(fieldName: "file", fileName: fileName, data: data, mimeType: "audio/mpeg")
-                builder.addTextField(named: "model", value: model)
+                builder.addTextField(name: "model", value: model)
                 if prompt != nil {
-                    builder.addTextField(named: "prompt", value: prompt!)
+                    builder.addTextField(name: "prompt", value: prompt!)
                 }
                 
                 if response_format != nil {
-                    builder.addTextField(named: "response_format", value: response_format!)
+                    builder.addTextField(name: "response_format", value: response_format!)
                 }
                 
                 if temperature != 0 {
-                    builder.addTextField(named: "temperature", value: String(temperature!))
+                    builder.addTextField(name: "temperature", value: String(temperature!))
                 }
                 
                 if language != nil {
-                    builder.addTextField(named: "language", value: language!)
+                    builder.addTextField(name: "language", value: language!)
                 }
                 return builder.build()
             }catch {
