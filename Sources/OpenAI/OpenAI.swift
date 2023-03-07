@@ -235,7 +235,7 @@ extension OpenAI {
         private let response_format: String?
         private let temperature: Double?
         private let language: String?
-        init(file: String, model: String, prompt: String? = nil , response_format: String? = "json", temperature: Double? = 0, language: String? = nil) {
+        public init(file: String, model: String, prompt: String? = nil , response_format: String? = "json", temperature: Double? = 0, language: String? = nil) {
             self.file = file
             self.model = model
             self.prompt = prompt
@@ -299,7 +299,7 @@ extension OpenAI {
         private let prompt: String?
         private let response_format: String?
         private let temperature: Double?
-        init(file: String, model: String, prompt: String? = nil , response_format: String? = "json", temperature: Double? = 0) {
+        public init(file: String, model: String, prompt: String? = nil , response_format: String? = "json", temperature: Double? = 0) {
             self.file = file
             self.model = model
             self.prompt = prompt
