@@ -227,14 +227,14 @@ public extension OpenAI {
 
 // MARK: - AudioTranscriptions
 
-extension OpenAI {
+public extension OpenAI {
     struct AudioTranscriptionsQuery {
-        private let file: String
-        private let model: Model
-        private let prompt: String?
-        private let response_format: String?
-        private let temperature: Double?
-        private let language: String?
+        public let file: String
+        public let model: Model
+        public let prompt: String?
+        public let response_format: String?
+        public let temperature: Double?
+        public let language: String?
         public init(file: String, model: String, prompt: String? = nil , response_format: String? = "json", temperature: Double? = 0, language: String? = nil) {
             self.file = file
             self.model = model
@@ -292,13 +292,13 @@ extension OpenAI {
 
 // MARK: - AudioTranslations
 
-extension OpenAI {
+public extension OpenAI {
     struct AudioTranslationsQuery {
-        private let file: String
-        private let model: String
-        private let prompt: String?
-        private let response_format: String?
-        private let temperature: Double?
+        public let file: String
+        public let model: String
+        public let prompt: String?
+        public let response_format: String?
+        public let temperature: Double?
         public init(file: String, model: String, prompt: String? = nil , response_format: String? = "json", temperature: Double? = 0) {
             self.file = file
             self.model = model
