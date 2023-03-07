@@ -354,6 +354,7 @@ internal extension OpenAI {
                 return
             }
             do {
+                print("data:\(data)")
                 let decoded = try JSONDecoder().decode(ResultType.self, from: data)
                 completion(.success(decoded))
             } catch {
