@@ -75,5 +75,21 @@ public extension OpenAI {
             }
         }
     }
+    
+    internal func audioTranscriptions(
+        query: AudioTranscriptionsQuery,
+        timeoutInterval: TimeInterval = 60.0
+    ) async throws -> AudioTranscriptionsResult {
+        try await withCheckedThrowingContinuation { continuation in
+            audioTranscriptions(query: query, timeoutInterval: timeoutInterval) { result in
+                switch result {
+                case let .success(success):
+                    return continuation.resume(returning: success)
+                case let .failure(failure):
+                    return continuation.resume(throwing: failure)
+                }
+            }
+        }
+    }
 
 }

@@ -225,6 +225,95 @@ public extension OpenAI {
 }
 
 
+// MARK: - AudioTranscriptions
+
+extension OpenAI {
+    struct AudioTranscriptionsQuery {
+        private let file: String
+        private let model: Model
+        private let prompt: String?
+        private let response_format: String?
+        private let temperature: Double?
+        private let language: String?
+        init(file: String, model: String, prompt: String? = nil , response_format: String? = "json", temperature: Double? = 0, language: String? = nil) {
+            self.file = file
+            self.model = model
+            self.prompt = prompt
+            self.response_format = response_format
+            self.temperature = temperature
+            self.language = language
+        }
+        
+        func buildMultipartFormData() -> Data? {
+            let boundary = UUID().uuidString
+            let builder = MultipartFormDataBuilder(boundary: boundary)
+            let fileURL = URL(fileURLWithPath: file)
+            let fileName = fileURL.lastPathComponent
+            do {
+                let data = try Data(contentsOf: fileURL)
+                builder.addDataField(fieldName: "file", fileName: fileName, data: data, mimeType: "audio/mpeg")
+                builder.addTextField(named: "model", value: model)
+                if prompt != nil {
+                    builder.addTextField(named: "prompt", value: prompt!)
+                }
+                
+                if response_format != nil {
+                    builder.addTextField(named: "response_format", value: response_format!)
+                }
+                
+                if temperature != 0 {
+                    builder.addTextField(named: "temperature", value: String(temperature!))
+                }
+                
+                if language != nil {
+                    builder.addTextField(named: "language", value: language!)
+                }
+                return builder.build()
+            }catch {
+                return nil
+            }
+        }
+    }
+    
+    struct AudioTranscriptionsResult: Codable {
+        public let text: String
+    }
+    
+    func audioTranscriptions(query: AudioTranscriptionsQuery, timeoutInterval: TimeInterval = 60.0, completion: @escaping (Result<AudioTranscriptionsResult, Error>) -> Void) {
+        var request = URLRequest(url: .chats)
+        request.httpMethod = "POST"
+        request.httpBody = query.buildMultipartFormData()
+        request.setValue("multipart/form-data", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(apiToken)", forHTTPHeaderField: "Authorization")
+        performURLRequest(request: request, completion: completion)
+    }
+    
+}
+
+// MARK: - AudioTranslations
+
+extension OpenAI {
+    struct AudioTranslationsQuery {
+        private let file: String
+        private let model: String
+        private let prompt: String?
+        private let response_format: String?
+        private let temperature: Double?
+        init(file: String, model: String, prompt: String? = nil , response_format: String? = "json", temperature: Double? = 0) {
+            self.file = file
+            self.model = model
+            self.prompt = prompt
+            self.response_format = response_format
+            self.temperature = temperature
+        }
+    }
+    
+    struct AudioTranslationsResult: Codable {
+        public let text: String
+    }
+    
+}
+
 internal extension OpenAI {
 
     func performRequest<ResultType: Codable>(request: Request<ResultType>, completion: @escaping (Result<ResultType, Error>) -> Void) {
@@ -252,6 +341,28 @@ internal extension OpenAI {
             return
         }
     }
+    
+    ///
+    func performURLRequest<ResultType: Codable>(request: URLRequest, completion: @escaping (Result<ResultType, Error>) -> Void) {
+        let task = session.dataTask(with: request) { data, _, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            guard let data = data else {
+                completion(.failure(OpenAIError.emptyData))
+                return
+            }
+            do {
+                let decoded = try JSONDecoder().decode(ResultType.self, from: data)
+                completion(.success(decoded))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        task.resume()
+    }
+    
 
     func makeRequest(query: Codable, url: URL, timeoutInterval: TimeInterval) throws -> URLRequest {
         var request = URLRequest(url: url, timeoutInterval: timeoutInterval)
@@ -261,6 +372,7 @@ internal extension OpenAI {
         request.httpBody = try JSONEncoder().encode(query)
         return request
     }
+
 }
 
 internal extension URL {
@@ -269,4 +381,7 @@ internal extension URL {
     static let images = URL(string: "https://api.openai.com/v1/images/generations")!
     static let embeddings = URL(string: "https://api.openai.com/v1/embeddings")!
     static let chats = URL(string: "https://api.openai.com/v1/chat/completions")!
+    static let audioTranscriptions = URL(string: "https://cleanbreak.today/v1/audio/transcriptions")!
 }
+
+

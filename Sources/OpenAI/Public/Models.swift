@@ -20,4 +20,5 @@ public extension Model {
     static let textEmbeddingAda = "text-embedding-ada-002"
     static let gpt3_5Turbo = "gpt-3.5-turbo"
     static let gpt3_5Turbo0301 = "gpt-3.5-turbo-0301"
+    static let whisper_1 = "whisper-1"
 }
