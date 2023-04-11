@@ -280,8 +280,8 @@ internal extension OpenAI {
 
 internal extension URL {
 
-    static let completions = URL(string: "https://api.wtracyliu.com/v1/completions")!
-    static let images = URL(string: "https://api.wtracyliu.com/v1/images/generations")!
-    static let embeddings = URL(string: "https://api.wtracyliu.com/v1/embeddings")!
-    static let chats = URL(string: "https://api.wtracyliu.com/v1/chat/completions")!
+    static let completions = URL(string: "https://openai.cleanbreak.today/v1/completions")!
+    static let images = URL(string: "https://openai.cleanbreak.today/v1/images/generations")!
+    static let embeddings = URL(string: "https://openai.cleanbreak.today/v1/embeddings")!
+    static let chats = URL(string: "https://openai.cleanbreak.today/v1/chat/completions")!
 }
