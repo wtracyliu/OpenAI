@@ -19,9 +19,11 @@ final public class OpenAI {
 
     private let apiToken: String
     private let session: URLSession
+    private let baseUrl: String?
 
-    public init(apiToken: String, configuration: URLSessionConfiguration? = nil) {
+    public init(apiToken: String, configuration: URLSessionConfiguration? = nil, baseUrl: String? = nil) {
         self.apiToken = apiToken
+        self.baseUrl = baseUrl
         if let config = configuration {
             self.session = URLSession(configuration: config)
         } else {
@@ -234,7 +236,15 @@ public extension OpenAI {
     }
     
     func chats(query: ChatQuery, timeoutInterval: TimeInterval = 60.0, completion: @escaping (Result<ChatResult, Error>) -> Void) {
-        performRequest(request: Request<ChatResult>(body: query, url: .chats, timeoutInterval: timeoutInterval), completion: completion)
+        var url: URL
+        if let baseUrl = baseUrl {
+            var urlComponents = URLComponents(string: baseUrl)
+            urlComponents?.path.append("/v1/chat/completions")
+            url = (urlComponents?.url)!
+        } else {
+            url = .chats
+        }
+        performRequest(request: Request<ChatResult>(body: query, url: url, timeoutInterval: timeoutInterval), completion: completion)
     }
     
 }
